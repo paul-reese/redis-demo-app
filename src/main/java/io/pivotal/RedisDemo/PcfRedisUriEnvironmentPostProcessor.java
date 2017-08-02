@@ -13,7 +13,8 @@ import java.util.Map;
 public class PcfRedisUriEnvironmentPostProcessor implements EnvironmentPostProcessor {
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        String host = getPropertyFromVcapServices("hostname");
+        //String host = getPropertyFromVcapServices("hostname");
+        String host = getIpAddressFromVcapServices();
         if (host == null) {
             System.out.println("hostname is null");
             return;
@@ -39,6 +40,21 @@ public class PcfRedisUriEnvironmentPostProcessor implements EnvironmentPostProce
         environment.getPropertySources().addFirst(propertySource);
     }
 
+    private static String getIpAddressFromVcapServices() {
+        try {
+            String vcapJson = System.getenv("VCAP_SERVICES");
+            if (vcapJson == null) {
+                return null;
+            }
+
+            Map<String, List<Map<String, Map<String, List<String>>>>> vcap = new ObjectMapper().readValue(vcapJson, Map.class);
+            // change below from rediscloud to redislabs
+            return vcap.get("rediscloud").get(0).get("credentials").get("ip_list").get(0);
+        } catch(Exception e) {
+            return null;
+        }
+    }
+
     private static String getPropertyFromVcapServices(String property) {
         try {
             String vcapJson = System.getenv("VCAP_SERVICES");
@@ -47,6 +63,8 @@ public class PcfRedisUriEnvironmentPostProcessor implements EnvironmentPostProce
             }
             Map<String, List<Map<String,
                     Map<String, String>>>> vcap = new ObjectMapper().readValue(vcapJson, Map.class);
+
+            // change below from rediscloud to redislabs
             return vcap.get("rediscloud").get(0).get("credentials").get(property);
         } catch(Exception e) {
             return null;
