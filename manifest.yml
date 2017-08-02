@@ -6,3 +6,5 @@ applications:
   path: ./target/RedisDemo-0.0.1-SNAPSHOT.jar
   services:
     - redis-demo
+  env:
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '[enabled: false]'
