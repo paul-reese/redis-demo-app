@@ -51,6 +51,7 @@ public class PcfRedisUriEnvironmentPostProcessor implements EnvironmentPostProce
             // change below from rediscloud to redislabs
             return vcap.get("rediscloud").get(0).get("credentials").get("ip_list").get(0);
         } catch(Exception e) {
+            System.out.println("Caught exception: " + e.getMessage());
             return null;
         }
     }
@@ -62,11 +63,12 @@ public class PcfRedisUriEnvironmentPostProcessor implements EnvironmentPostProce
                 return null;
             }
             Map<String, List<Map<String,
-                    Map<String, String>>>> vcap = new ObjectMapper().readValue(vcapJson, Map.class);
+                    Map<String, Object>>>> vcap = new ObjectMapper().readValue(vcapJson, Map.class);
 
             // change below from rediscloud to redislabs
             return vcap.get("rediscloud").get(0).get("credentials").get(property);
         } catch(Exception e) {
+            System.out.println("Caught exception: " + e.getMessage());
             return null;
         }
     }
