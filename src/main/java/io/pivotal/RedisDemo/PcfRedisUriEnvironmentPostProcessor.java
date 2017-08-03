@@ -20,13 +20,13 @@ public class PcfRedisUriEnvironmentPostProcessor implements EnvironmentPostProce
             return;
         }
 
-        String password = getPropertyFromVcapServices("password");
+        String password = getPropertyFromVcapServices("password").toString();
         if (password == null) {
             System.out.println("password is null");
             return;
         }
 
-        String port = getPropertyFromVcapServices("port");
+        String port = getPropertyFromVcapServices("port").toString();
         if (port == null) {
             System.out.println("port is null");
             return;
@@ -56,7 +56,7 @@ public class PcfRedisUriEnvironmentPostProcessor implements EnvironmentPostProce
         }
     }
 
-    private static String getPropertyFromVcapServices(String property) {
+    private static Object getPropertyFromVcapServices(String property) {
         try {
             String vcapJson = System.getenv("VCAP_SERVICES");
             if (vcapJson == null) {
